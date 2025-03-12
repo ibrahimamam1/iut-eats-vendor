@@ -8,6 +8,8 @@ class AppConstants {
   static const String SEARCH_PRODUCT_URI = "/api/v1/products/search?query=";
   // static const String DRINKS_URI="/api/v1/products/drinks";
   static const String UPLOAD_URL = "/api/v1/products/create";
+  static const String EDIT_PRODUCT_URL = "/api/v1/products/edit";
+  static const String DELETE_PRODUCT_URL = "/api/v1/products/delete?id=";
 
   
   static const String TOKEN = "TOKEN";

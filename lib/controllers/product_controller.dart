@@ -50,4 +50,25 @@ class ProductController extends GetxController {
     }
   }
 
+  Future<void> editProduct(
+      int id, String name, String description, int price) async {
+    print("creating form data");
+    final formData = FormData({
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+    });
+  }
+    Future<void> deleteProduct(int id) async {
+      Response response = await productRepo.deleteProduct(id);
+      if (response.statusCode == 200) {
+        Get.snackbar('Success', 'Product deleted succesfully');
+      } else {
+        Get.snackbar('Error', response.statusText!);
+        print("Error: ${response.statusCode}");
+        print(response.body.toString());
+      }
+    }
+  
 }
