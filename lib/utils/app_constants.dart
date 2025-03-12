@@ -10,7 +10,9 @@ class AppConstants {
   static const String UPLOAD_URL = "/api/v1/products/create";
   static const String EDIT_PRODUCT_URL = "/api/v1/products/edit";
   static const String DELETE_PRODUCT_URL = "/api/v1/products/delete?id=";
+  static const String ORDER_URI = "/api/v1/products/get_user_order";
 
-  
+
+
   static const String TOKEN = "TOKEN";
 }

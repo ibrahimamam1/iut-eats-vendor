@@ -1,39 +1,63 @@
-// lib/orders_screen.dart
 import 'package:flutter/material.dart';
-
-class Order {
-  final String id;
-  final String customerName;
-  final double totalAmount;
-  final String status;
-  Order(this.id, this.customerName, this.totalAmount, this.status);
-}
-
-List<Order> dummyOrders = [
-  Order('001', 'John Doe', 25.50, 'Pending'),
-  Order('002', 'Jane Smith', 15.00, 'Delivered'),
-];
+import 'package:get/get.dart';
+import 'models/order_model.dart';
+import 'controllers/order_controller.dart';
 
 class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.all(8.0),
-      itemCount: dummyOrders.length,
-      itemBuilder: (context, index) {
-        final order = dummyOrders[index];
-        return Card(
-          elevation: 2,
-          child: ListTile(
-            title: Text('Order #${order.id}'),
-            subtitle: Text('${order.customerName} - \$${order.totalAmount.toStringAsFixed(2)}'),
-            trailing: Text(
-              order.status,
-              style: TextStyle(
-                color: order.status == 'Pending' ? Colors.orange : Colors.green,
+    final OrderController controller = Get.find<OrderController>();
+
+    return GetBuilder<OrderController>(
+      builder: (controller) {
+        if (!controller.isLoaded) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.orderList.isEmpty) {
+          return const Center(child: Text('No orders available'));
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(8.0),
+          itemCount: controller.orderList.length,
+          itemBuilder: (context, index) {
+            final order = controller.orderList[index];
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Order ID: ${order.id}'),
+                    Text('Customer: ${order.customerName}'),
+                    Text('Status: ${order.orderStatus}',
+                      style: TextStyle(
+                        color: order.orderStatus == 'delivered' ? Colors.green : Colors.orange,
+                      ),
+                    ),
+                    Text('Items:'),
+                    // Debug print (remove after testing)
+                    Builder(builder: (context) {
+                      print('Order ${order.id}: items = ${order.orderItems}');
+                      return const SizedBox.shrink();
+                    }),
+                    ...order.orderItems.map((item) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Text('${item['name']} x ${item['quantity']}'),
+                      );
+                    }).toList(),
+                    if (order.orderStatus == 'pending')
+                      ElevatedButton(
+                        onPressed: () {
+                          controller.updateOrderStatus(order.id, 'delivered');
+                        },
+                        child: Text('Delivered'),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
